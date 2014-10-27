@@ -1,0 +1,58 @@
+# README for processing a fastq to identify V, J cassettes and CDR3 region
+# Note: A test fastq file (D5_S23_L004_R1_001.fastq) is provided to play around with this pipeline.
+
+
+Steps:
+1) Split fastq file into pieces for quicker analysis:
+	Run splitfastqs.sh to split the file into parts
+
+	Inputs:
+		sample: sample name
+		indir: directory containing sample
+		outdir: directory to put the output
+
+2) Map using bwa (currently bwasw, but bwa-mem is better if you want to work on implementing that):
+	Run bwawrapper.sh
+
+	Inputs:
+		prefix: prefix to identify sample with pieces ending in aa,ab,ac,etc.	
+		datadir: directory containing split sample files
+		fastaref: path to the fasta reference (see comments in file)
+		outdir: directory to put the output
+
+	This script runs bwa_job.sh
+
+
+3) Run identification pipeline: 
+	Run pipelinewrapper.sh
+	Inputs:
+		prefix: prefix to identify sample with pieces ending in aa,ab,ac,etc.
+		datadir: directory containing bams
+		outdir: directory to place the output
+		chain: which chain to analyze (A or B)
+		
+	Depending on input to chain variable, this script runs either:
+		doTRA.sh (Finds A chain CDR3) -> Requires TRA.v37.YapingCoordinates_VDJonly3.txt, TRAV.ref.IGMT.motif2.txt, TRAJ.ref.IGMT.motif3.txt
+		doTRB.sh (Finds B chain CDR3) -> Requires TRB.v37p8.YapingCoordinates2.txt, TRBV.ref.IGMT.motif2.txt, TRBJ.ref.IGMT.motif2.txt
+	These run a series of perl scripts and use included reference files listed above in order to perform the analysis.	
+
+4) Process output into a final table.
+		Run processCDR3wrapper.sh
+		Inputs:
+			prefix: prefix to identify sample with pieces ending in aa,ab,ac,etc.
+                	datadir: directory containing bams
+                	outdir: directory to place the output
+                	chain: which chain to analyze (A or B)
+
+		This script runs processCDR3s_job.sh
+			- Requires:
+				 fixNts.py # main workhorse 
+				 merge.awk # merges counts
+				 humanA.Jmotif, humanB.Jmotif # allowed J motif references for each chain
+				 codonmap.txt # translates codons to amino acid, used by fixNts.py	
+
+
+Notes: 
+1. Steps are all qsubbed, so it is possible to use qsub hold_jid to run all of these in one go if you want to set that up.
+2. With the exception of the fasta reference, all necessary files are contained in the CDR3pipeline directory.
+
