@@ -9,7 +9,6 @@ Available functions:
 calc_clonality: Compute Shannon entropy (with Miller-Madow correction for underestimation bias)
 calc_simpson: Compute Simpson's index
 calc_gini: Compute Gini coefficient
-calc_hill: Compute Hill index
 calc_r50: Compute R50 index
 
 '''
@@ -45,7 +44,7 @@ def calc_simpson(vals):
         px=px[px.nonzero()] # remove 0s
 	px=px**2
 
-	return 1-sum(px)
+	return sum(px)
 
 
 def calc_gini(vals):
@@ -145,8 +144,6 @@ def main():
 		D=calc_simpson(vals)
 	elif diversity_type=="gini": # Gini Coefficient
 		D=calc_gini(vals)
-	elif diversity_type=="hill": # Hill Index
-		x=4
 	elif diversity_type=="r50": # R50
 		D=calc_r50(vals)
 	else:
