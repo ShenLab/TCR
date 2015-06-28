@@ -68,7 +68,7 @@ def sample_nb(repertoire,p,cov):
 	return sample
 		
 
-def plot_abundance(x,y,leg,name='output',ymax=None):
+def plot_abundance(x,y,leg,name='output',ymax=None,col='b'):
 	'''
 	x: copy number of largest clone
         y: number of unique clones with each copy number 1:x
@@ -84,9 +84,10 @@ def plot_abundance(x,y,leg,name='output',ymax=None):
 	fig=plt.figure()
 	ax=plt.gca()
 	#eq="y=%.1e*x^%.2g" % (a,k)
-	ax.scatter(copyfq,uniqueclones,lw = 0,label=leg)
+	ax.scatter(copyfq,uniqueclones,c=col,lw = 0,label=leg)
 	ax.set_yscale('log')
 	ax.set_xscale('log')
+
 	if ymax is None:
 		ymax=max(uniqueclones)*1.2	
 	plt.axis([min(copyfq)*0.9,max(copyfq)*1.2,0.9, ymax])
@@ -94,6 +95,43 @@ def plot_abundance(x,y,leg,name='output',ymax=None):
 	plt.legend(loc='upper right',numpoints = 1)
 	plt.savefig('%s.png' % name )
 	# plt.show()
+
+def plot_abundance_pair(x1,y1,x2,y2,leg=None,name='output',ymax=None):
+        '''
+        x: copy number of largest clone
+        y: number of unique clones with each copy number 1:x
+
+        '''
+	cellcopy=x1
+        uniquecells=y1
+	readcopy=x2
+	uniqueclones=y2
+	
+	cellfq=[float(i)/sum(cellcopy) for i in cellcopy]
+	readfq=[float(i)/sum(readcopy) for i in readcopy]
+
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+	from copy import deepcopy
+
+        fig=plt.figure()
+	ax=fig.add_subplot(111)
+	ax.scatter(cellfq, uniquecells, c='r',marker='^',label='cells',lw=0)
+	ax.scatter(readfq, uniqueclones, c='b', marker='o',label='reads',lw = 0)
+        #ax.scatter(copyfq,uniqueclones,lw = 0,label=leg)
+        ax.set_yscale('log')
+        ax.set_xscale('log')
+        if ymax is None:
+                ymax=max(uniquecells)*1.2
+	
+	allfq=deepcopy(cellfq)
+	allfq.extend(readfq)
+        plt.axis([min(allfq)*0.9,max(allfq)*1.2,0.9, ymax])
+        #plt.axis([0.9,(x+1)*1.2,0.9,uniqueclones[0]*1.2])
+        plt.legend(loc='upper right',numpoints = 1)
+        plt.savefig('%s.png' % name )
+        # plt.show()
 
 
 def main():
