@@ -34,7 +34,41 @@ def make_repertoire(x,y,usage):
 	repertoire=dict(zip(copyno,VJlabel))
 	return repertoire
 
-def plot_abundance(x,y,a,k):
+def sample_repertoire(repertoire, samplesize):
+	'''
+	sample from a repertoire
+	'''
+	from random import sample
+	import itertools
+	from diversitymeasures import make_hist
+
+	# expand the repertoire and index clones
+	expandedVJ=[[(n,j) for j in vj] for n,vj in repertoire.items()]
+	expandedVJ=list(itertools.chain(*expandedVJ))
+	expandedVJ=[(i,n,vj) for i,(n,vj) in enumerate(expandedVJ)]  #i==cloneid,n==copyno,j==VJid
+	
+	fullCDR3=[[[i,vj]]*n for i,n,vj in expandedVJ]
+	fullCDR3=tuple(itertools.chain(*fullCDR3))
+	sampleCDR3=sample(fullCDR3,samplesize)
+	
+	h=make_hist(sampleCDR3)
+
+	newrepertoire=dict()
+	# convert into repertoire format [copy # : VJ list]
+	for (i,j),k in h:
+		newrepertoire.setdefault(k,[]).append(j)
+
+	return newrepertoire
+
+
+def sample_nb(repertoire,p,cov):
+	from numpy.random import negative_binomial as nb
+			
+	sample=[[(nb(i*cov,p),j[k]) for k in range(len(j))] for i,j in repertoire.items()]
+	return sample
+		
+
+def plot_abundance(x,y,leg,name='output'):
 	'''
 	x: copy number of largest clone
         y: number of unique clones with each copy number 1:x
@@ -45,19 +79,18 @@ def plot_abundance(x,y,a,k):
 	matplotlib.use('Agg')
 	import matplotlib.pyplot as plt
 
-	copyno=range(1,x+1)
+	copyno=x
 	copyfq=[float(i)/sum(copyno) for i in copyno]
-	
 	fig=plt.figure()
 	ax=plt.gca()
-	eq="y=%.1e*x^%.2g" % (a,k)
-	ax.scatter(copyfq,uniqueclones,lw = 0,label=eq)
+	#eq="y=%.1e*x^%.2g" % (a,k)
+	ax.scatter(copyfq,uniqueclones,lw = 0,label=leg)
 	ax.set_yscale('log')
 	ax.set_xscale('log')
-	plt.axis([min(copyfq)*0.9,max(copyfq)*1.2,0.9, uniqueclones[0]*1.2])
+	plt.axis([min(copyfq)*0.9,max(copyfq)*1.2,0.9, max(uniqueclones)*1.2])
 	#plt.axis([0.9,(x+1)*1.2,0.9,uniqueclones[0]*1.2])
 	plt.legend(loc='upper right',numpoints = 1)
-	plt.savefig('testplot.png')
+	plt.savefig('%s.png' % name )
 	# plt.show()
 
 
