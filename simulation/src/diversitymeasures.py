@@ -26,10 +26,10 @@ def make_hist(vals):
 		Sublist 2: Number of occurences of the value
 
 	'''
-	bins=np.bincount(vals) 
-	h=zip(range(max(vals)+1),bins)
-	h=[[i,j] for [i,j] in h if j>0]
+	from collections import Counter
 
+	#h=Counter(vals).items()
+	h=Counter(map(tuple,vals)).items() 
 	return h
 
 def calc_entropy(vals):
