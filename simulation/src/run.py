@@ -10,9 +10,9 @@ mm=10**4
 x,y=make_pwlaw(k,a,s)
 eq="y=%.1e*x^%.2g" % (a,k)
 repertoire=make_repertoire(x,y,650)
-plot_abundance(range(1,x+1),y,eq,'fullrep',ymax=mm)
-
-del y
+plot_abundance(range(1,x+1),y,eq,'fullrep',ymax=mm,col='r')
+print sum([i*j for i,j in zip(range(1,x+1),y)])
+#del y
 
 sample=sample_nb(repertoire,0.6,5)
 sample=list(itertools.chain(*sample))
@@ -24,18 +24,22 @@ for i,j in sample:
 if 0 in newrepertoire.keys():
 	newrepertoire.pop(0)
 
-y=[len(j) for j in newrepertoire.values()]
-x=newrepertoire.keys()
+y2=[len(j) for j in newrepertoire.values()]
+x2=newrepertoire.keys()
 
-print sum([i*j for i,j in zip(x,y)])
-
+print sum([i*j for i,j in zip(x2,y2)])
+print sum(y2)
 #sample=list(itertools.chain(*sample))
 #print sample
 
 #s=make_hist(sample)
 #print s
 
-plot_abundance(x,y,'nb','negative_bin',ymax=mm)
+plot_abundance(x2,y2,'nb','negative_bin',ymax=mm)
+
+#leg=(['cells'],['reads'])
+x=range(1,x+1)
+plot_abundance_pair(x,y,x2,y2,name='plotpair',ymax=mm)
 
 #print sum([i*j for i,j in zip(*s)])
 
