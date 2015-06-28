@@ -68,7 +68,7 @@ def sample_nb(repertoire,p,cov):
 	return sample
 		
 
-def plot_abundance(x,y,leg,name='output'):
+def plot_abundance(x,y,leg,name='output',ymax=None):
 	'''
 	x: copy number of largest clone
         y: number of unique clones with each copy number 1:x
@@ -87,7 +87,9 @@ def plot_abundance(x,y,leg,name='output'):
 	ax.scatter(copyfq,uniqueclones,lw = 0,label=leg)
 	ax.set_yscale('log')
 	ax.set_xscale('log')
-	plt.axis([min(copyfq)*0.9,max(copyfq)*1.2,0.9, max(uniqueclones)*1.2])
+	if ymax is None:
+		ymax=max(uniqueclones)*1.2	
+	plt.axis([min(copyfq)*0.9,max(copyfq)*1.2,0.9, ymax])
 	#plt.axis([0.9,(x+1)*1.2,0.9,uniqueclones[0]*1.2])
 	plt.legend(loc='upper right',numpoints = 1)
 	plt.savefig('%s.png' % name )

@@ -3,25 +3,26 @@ from diversitymeasures import calc_entropy as entropy
 from diversitymeasures import make_hist
 import itertools
 
-k=-2
-a=50
-s=20000
-
+k=-1.5
+a=2000
+s=200000
+mm=10**4
 x,y=make_pwlaw(k,a,s)
 eq="y=%.1e*x^%.2g" % (a,k)
 repertoire=make_repertoire(x,y,650)
-plot_abundance(range(1,x+1),y,eq,'fullrep2')
+plot_abundance(range(1,x+1),y,eq,'fullrep',ymax=mm)
 
 del y
 
-sample=sample_nb(repertoire,0.8,20)
+sample=sample_nb(repertoire,0.6,5)
 sample=list(itertools.chain(*sample))
 
 newrepertoire=dict()
 for i,j in sample:
 	newrepertoire.setdefault(i,[]).append(j)
 
-newrepertoire.pop(0)
+if 0 in newrepertoire.keys():
+	newrepertoire.pop(0)
 
 y=[len(j) for j in newrepertoire.values()]
 x=newrepertoire.keys()
@@ -34,7 +35,7 @@ print sum([i*j for i,j in zip(x,y)])
 #s=make_hist(sample)
 #print s
 
-plot_abundance(x,y,'nb','negative_bin')
+plot_abundance(x,y,'nb','negative_bin',ymax=mm)
 
 #print sum([i*j for i,j in zip(*s)])
 
