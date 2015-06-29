@@ -67,6 +67,65 @@ def sample_nb(repertoire,p,cov):
 	sample=[[(nb(i*cov,p),j[k]) for k in range(len(j))] for i,j in repertoire.items()]
 	return sample
 		
+def expand_repertoire(repertoire,f,g,s):
+	import itertools
+	from random import sample,random
+
+	# expand the initial repertoire 
+	expandedrep=[[(n,j) for j in vj] for n,vj in repertoire.items()]
+        expandedrep=list(itertools.chain(*expandedrep))
+	fullCDR3=dict()
+        expandedrep=[fullCDR3.setdefault(i,(j,k)) for i,(j,k) in enumerate(expandedrep)]
+	
+	ncells=sum(zip(*fullCDR3.values())[0])
+	nclones=len(fullCDR3)
+	numactive=int(nclones*f) # number clones to expand
+        numinactive=nclones-numactive # remaining clones
+        finalnumactivecells=int(s*ncells) # number cells in the final repertoire that are from expanded clones
+	
+	active=sample(fullCDR3,numactive)
+	active=dict([[i,fullCDR3[i]] for i in active]) # active list
+	
+	inactive=list(set(fullCDR3)-set(active))
+	inactive=dict([[i,fullCDR3[i]] for i in inactive]) # inactive list
+
+	# expand repertoire
+	iter=1	
+	numbercreated=0
+	while sum(zip(*active.values())[0])<finalnumactivecells:
+		for key in active.keys():
+			if random() <= 0.5:
+				active[key]=(int(round(active[key][0]*(1+g))),active[key][1])
+				numbercreated+=int(round(active[key][0]*(1+g)))-active[key][0]
+		iter+=1
+
+
+	# remove inactive
+	nremoved=0
+	x=400
+	while nremoved<numbercreated:
+		key=sample(inactive,1)[0]
+		if inactive[key][0]==0:
+			continue;
+		else:
+		   inactive[key]=(inactive[key][0]-x,inactive[key][1])	
+		   nremoved+=x
+		   if inactive[key][0]<=0:
+			nremoved=nremoved+inactive[key][0]
+			inactive[key]=(0,inactive[key][1])
+
+	
+	newrep=active.copy()
+	newrep.update(inactive)
+
+        # convert into repertoire format [copy # : VJ list]
+	newrepertoire=dict()
+        for i,j in newrep.values():
+                newrepertoire.setdefault(i,[]).append(j)
+
+        return newrepertoire
+	
+	
 
 def plot_abundance(x,y,leg,name='output',ymax=None,col='b'):
 	'''
