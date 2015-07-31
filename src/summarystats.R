@@ -32,9 +32,19 @@ calcSI<-function(vals){
   return(si)
 }
 
+clipboard <- function(x, sep="\t", row.names=FALSE, col.names=TRUE){
+  con <- pipe("pbcopy -selection clipboard -i", open="w")
+  write.table(x, con, sep=sep, row.names=row.names, col.names=col.names)
+  close(con)
+}
+
 summarystats=data.frame(samples=L)
 summarystats$nreads=sapply(S,function(x) sum(x$count))
 summarystats$nclones=sapply(S,function(x) length(x$count))
 summarystats$entropy=sapply(S, function(x) calcH(x$count))
 summarystats$clonality=sapply(S, function(x) calcC(x$count))
 summarystats$SI=sapply(S, function(x) calcSI(x$count))
+
+clipboard(summarystats,col.names=F)
+
+
