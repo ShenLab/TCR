@@ -12,7 +12,6 @@ L<-L[grep(tissue,L,ignore.case = T)]
 L<-L[grep(69,L,invert=T)]
 
 options(stringsAsFactors=F) 
-require(ggplot2)
 require(plyr)
 
 counts2hist<-function(c,id)
