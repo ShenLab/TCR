@@ -121,7 +121,7 @@ print(uq1+uq2+uq3+o1+o2+o3+otot)
 
 
 # make venn diagrams
-#require(VennDiagram)
+require(VennDiagram)
 
 if (top500==1){
   venn.diagram(list(R[[1]]$nucleotide,R[[2]]$nucleotide,R[[3]]$nucleotide),fill = c("red", "blue","green"),
