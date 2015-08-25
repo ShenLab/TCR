@@ -154,7 +154,7 @@ def main():
 	
 		# Optional Arguments
 		parser.add_argument("-a", "--header", help="file has a header", action="store_true")
-		parser.add_argument("-t","--type", default="clonality",help="diversity measure. Options are: Entropy, Clonality, Simpson, Gini, R50, True Diversity (2nd argument q)")
+		parser.add_argument("-t","--type", default="clonality",help="diversity measure. Options are: Entropy, Clonality, Simpson, Gini, R50, True (2nd argument q)")
 		
 		# Positional arguments
 		parser.add_argument("filename",help="input filename. Column 1: ids, Column 2: count or frequency")
