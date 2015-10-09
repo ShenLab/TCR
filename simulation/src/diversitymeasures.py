@@ -6,17 +6,12 @@ import numpy as np
 ''' 
 Available functions:
 
-<<<<<<< HEAD
-=======
-make_hist: Count up occurences of input values (i.e. make a histogram)   #### TODO: add as optional flag to main()
->>>>>>> 222edbd6a4946793ab13ae98f5ead3c5fdf65552
 calc_entropy: Compute Shannon entropy
 calc_clonality: Compute normalized entropy (clonality)
 calc_simpson: Compute Simpson's index
 calc_gini: Compute Gini coefficient
 calc_r50: Compute R50 index
 calc_true: True diversity
-<<<<<<< HEAD
 calc_max: Max frequency
 
 '''
@@ -38,31 +33,6 @@ def calc_entropy(vals):
                 vals->list of counts OR frequencies
 
 	'''
-=======
-
-to add: True diversity (i.e. Hill number)
-
-'''
-
-def make_hist(vals):
-	'''
-	Output:
-		List of two sublists.
-		Sublist 1: List of all unique values
-		Sublist 2: Number of occurences of the value
-
-	'''
-	from collections import Counter
-
-	#h=Counter(vals).items()
-	h=Counter(map(tuple,vals)).items() 
-	return h
-
-def calc_entropy(vals):
-
-        import numpy as np
-
->>>>>>> 222edbd6a4946793ab13ae98f5ead3c5fdf65552
         if type(vals) is not np.ndarray:
                 vals=np.array(vals)
 
@@ -78,28 +48,15 @@ def calc_entropy(vals):
 
 def calc_clonality(vals):
 	'''
-<<<<<<< HEAD
 	Compute normalized entropy -- clonality (CL=1+sum(p*log(p)/logN)
 
 	'''
-=======
-	Compute information entropy (H=-sum(p*log(p))
-	Input: 
-		ids -> list of identifiers
-		vals->list of counts OR frequencies
-	'''
-	import numpy as np
-
->>>>>>> 222edbd6a4946793ab13ae98f5ead3c5fdf65552
 	if type(vals) is not np.ndarray:
 		vals=np.array(vals)
 
 	px=vals.astype(float)/vals.sum() # normalize
 	px=px[px.nonzero()] # remove 0s
 	H=sum(-px*np.log2(px)) # compute entropy
-	#N=sum(vals)
-	#M=len(vals)
-	#H=E_H+(M-1)/(2*N) # Miller-Madow
 
 	Hmax=np.log2(len(px))
 	return 1-H/Hmax
@@ -176,11 +133,7 @@ def main():
 
 	def loadfile(fname,h):
 		'''
-<<<<<<< HEAD
 		Loads files. If h flag is True, assumes a header is present and removes it.
-=======
-		Loads files. If a flag is True, assumes a header is present and removes it.
->>>>>>> 222edbd6a4946793ab13ae98f5ead3c5fdf65552
 
 		'''
 		fin=open(fname,"r")
@@ -208,19 +161,11 @@ def main():
 	
 		# Optional Arguments
 		parser.add_argument("-a", "--header", help="file has a header", action="store_true")
-<<<<<<< HEAD
 		parser.add_argument("-t","--type", default="clonality",help="diversity measure. Options are: Max, Entropy, Clonality, Simpson, Gini, R50, True (2nd argument q)")
 		
 		# Positional arguments
 		parser.add_argument("filename",help="input filename. Column 1: ids, Column 2: count or frequency")
 		parser.add_argument("q", nargs='?', default=1, help="exponent of true diversity -- can be omitted!")	
-=======
-		parser.add_argument("-t","--type", default="clonality",help="diversity measure. Options are: Entropy, Clonality, Simpson, Gini, R50, True Diversity (2nd argument q)")
-		
-		# Positional arguments
-		parser.add_argument("filename",help="input filename. Column 1: ids, Column 2: count or frequency")
-		parser.add_argument("q", nargs='?', default=1, help="exponent of true diversity")	
->>>>>>> 222edbd6a4946793ab13ae98f5ead3c5fdf65552
 		
 		return parser
 
@@ -247,11 +192,8 @@ def main():
 		D=calc_r50(vals)
 	elif diversity_type=="true": # true diversity
 		D=calc_true(vals,q)
-<<<<<<< HEAD
 	elif diversity_type=="max": # maximum frequency
 		D=calc_max(vals)
-=======
->>>>>>> 222edbd6a4946793ab13ae98f5ead3c5fdf65552
 	else:
 		print "Error: unknown diversity measure"
 
