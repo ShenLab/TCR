@@ -6,23 +6,53 @@ import numpy as np
 ''' 
 Available functions:
 
-calc_clonality: Compute Shannon entropy (with Miller-Madow correction for underestimation bias)
+calc_entropy: Compute Shannon entropy
+calc_clonality: Compute normalized entropy (clonality)
 calc_simpson: Compute Simpson's index
 calc_gini: Compute Gini coefficient
 calc_r50: Compute R50 index
+calc_true: True diversity
+calc_max: Max frequency
 
 '''
 
+def calc_max(vals):
+        if type(vals) is not np.ndarray:
+                vals=np.array(vals)
 
+	px=vals.astype(float)/vals.sum() # normalize
+
+	return max(px)
+
+
+def calc_entropy(vals):
+	'''
+	Compute information entropy (H=-sum(p*log(p))
+	Input: 
+                ids -> list of identifiers
+                vals->list of counts OR frequencies
+
+	'''
+        if type(vals) is not np.ndarray:
+                vals=np.array(vals)
+
+        px=vals.astype(float)/vals.sum() # normalize
+        px=px[px.nonzero()] # remove 0s
+        H=sum(-px*np.log2(px)) # compute entropy
+        #N=sum(vals)
+        #M=len(vals)
+        #H=E_H+(M-1)/(2*N) # Miller-Madow
+
+        return H
 
 
 def calc_clonality(vals):
 	'''
-	Compute information entropy (H=-sum(p*log(p))
-	Input: 
-		ids -> list of identifiers
-		vals->list of counts OR frequencies
+	Compute normalized entropy -- clonality (CL=1+sum(p*log(p)/logN)
+
 	'''
+	if type(vals) is not np.ndarray:
+		vals=np.array(vals)
 
 	px=vals.astype(float)/vals.sum() # normalize
 	px=px[px.nonzero()] # remove 0s
@@ -85,7 +115,19 @@ def calc_r50(vals):
 
 	return 1-sum(keptvals)/N
 
+def calc_true(vals,q):
+	'''
+	True diversity measure with exponent q
 
+	'''
+
+	if q==1:
+		D=np.exp(calc_entropy(vals))
+	else:
+		px=vals.astype(float)/vals.sum()
+		D=sum(px**q)**(1/(1-q))
+
+	return D
 
 def main():
 	import os
@@ -114,44 +156,52 @@ def main():
 
 	def get_args():
 		'''
-			Gets input arguments
+		Gets input arguments
+		
 		'''
 			
 		parser=ArgumentParser(description="Compute diversity measures.",epilog="Diversity measures can be imported as a module and run from within a python script")
 	
 		# Optional Arguments
 		parser.add_argument("-a", "--header", help="file has a header", action="store_true")
-		parser.add_argument("-t","--type", default="clonality",help="diversity measure. Options are: Entropy, Clonality, Simpson, Gini, Hill, R50")
+		parser.add_argument("-t","--type", default="clonality",help="diversity measure. Options are: Max, Entropy, Clonality, Simpson, Gini, R50, True (2nd argument q)")
 		
 		# Positional arguments
 		parser.add_argument("filename",help="input filename. Column 1: ids, Column 2: count or frequency")
+		parser.add_argument("q", nargs='?', default=1, help="exponent of true diversity -- can be omitted!")	
 		
 		return parser
 
 
 	parser=get_args() # get input arguments
 	args=parser.parse_args()
-
+	
 	ids,vals=loadfile(args.filename,args.header) # load the file	
+	q=float(args.q) # exponent to be used if calculating true diversity
 	
 	assert(len(ids)==len(vals)) # check that ids map to values
 
 	diversity_type=args.type.lower()
 
-	if diversity_type=="clonality": # Shannon Entropy with Miller-Madow bias correction
+	if diversity_type=="clonality": # clonality 
 		D=calc_clonality(vals)
+	elif diversity_type=="entropy": # Shannon entropy
+		D=calc_entropy(vals)
 	elif diversity_type=="simpson": # Simpson's Index
 		D=calc_simpson(vals)
 	elif diversity_type=="gini": # Gini Coefficient
 		D=calc_gini(vals)
 	elif diversity_type=="r50": # R50
 		D=calc_r50(vals)
+	elif diversity_type=="true": # true diversity
+		D=calc_true(vals,q)
+	elif diversity_type=="max": # maximum frequency
+		D=calc_max(vals)
 	else:
 		print "Error: unknown diversity measure"
 
-	print D
+	print diversity_type+" = "+str(D)
 
-	
 	
 
 if __name__ == '__main__':
