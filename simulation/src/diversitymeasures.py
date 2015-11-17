@@ -104,10 +104,9 @@ def calc_r50(vals):
 	M=len(vals) # No of labels
 	N=sum(vals) # Total counts
 
-	M50=(M/2) # 50% of labels
+	M50=int(M/2) # 50% of labels
 
-
-	keptvals=[i for j,i in enumerate(vals) if (j+1)<=M50]
+	keptvals=vals[0:M50]
 	keptvals=map(float,keptvals)
 
 	return 1-sum(keptvals)/N
@@ -191,6 +190,7 @@ def main():
 	elif diversity_type=="r50": # R50
 		D=calc_r50(vals)
 	elif diversity_type=="true": # true diversity
+		diversity_type=diversity_type+',q%s' %(q)
 		D=calc_true(vals,q)
 	elif diversity_type=="max": # maximum frequency
 		D=calc_max(vals)
