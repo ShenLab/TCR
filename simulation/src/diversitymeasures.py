@@ -100,16 +100,12 @@ def calc_r50(vals):
 	Fraction of counts at which up to 50% of labels are accounted for
 
 	'''
-	vals=sorted(vals)
-	M=len(vals) # No of labels
-	N=sum(vals) # Total counts
+	vals=np.sort(vals)
+	vsum=np.cumsum(vals) # cumulative sum
+	N=vsum[-1]
+	keptvals=vals[vsum<N/2]
 
-	M50=int(M/2) # 50% of labels
-
-	keptvals=vals[0:M50]
-	keptvals=map(float,keptvals)
-
-	return 1-sum(keptvals)/N
+	return 1-float(len(keptvals))/len(vals)
 
 def calc_true(vals,q):
 	'''
