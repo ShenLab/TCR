@@ -30,15 +30,17 @@ sorting_filter<-function(X,cutoff=2){
   indices=data.frame(0+(ratios>=1/cutoff)) # index on whether or not the clone is below the frequency cutoff (0 if yes, 1 if no)
  # indices$flag=rep(0,dim(indices)[1]) # initialize flags
   
-  CD4vals=indices[,grep('CD4',names(indices),ignore.case=T,value=T)]
-  CD8vals=indices[,grep('CD8',names(indices),ignore.case=T,value=T)]
-  CD4ratios=data.frame(ratios[,grep('CD4',colnames(ratios),ignore.case=T,value=T)])
-  CD8ratios=data.frame(ratios[,grep('CD8',colnames(ratios),ignore.case=T,value=T)])  
+  CD4vals=data.frame(CD4=indices[,grep('CD4',names(indices),ignore.case=T,value=T)])
+  CD8vals=data.frame(CD8=indices[,grep('CD8',names(indices),ignore.case=T,value=T)])
+  CD4ratios=data.frame(CD4=ratios[,grep('CD4',colnames(ratios),ignore.case=T,value=T)])
+  CD8ratios=data.frame(CD8=ratios[,grep('CD8',colnames(ratios),ignore.case=T,value=T)])  
   
+  if(dim(CD4vals)[2]>1 & dim(CD8vals)[2]>1){
   CD4vals$total=rowSums(CD4vals)
-  CD8vals$total=rowSums(CD8vals)
   CD4ratios$total=rowSums(0+(CD4ratios>0))
+  CD8vals$total=rowSums(CD8vals)
   CD8ratios$total=rowSums(0+(CD8ratios>0))
+  } else {CD4vals$total=CD4vals$CD4;CD4ratios$total=0+(CD4ratios>0); CD8vals$total=CD8vals$CD8; CD8ratios$total=0+(CD8ratios>0)}
   
   indices$CD4present=0+(CD4vals$total>0)
   indices$CD8present=0+(CD8vals$total>0)
@@ -51,24 +53,6 @@ sorting_filter<-function(X,cutoff=2){
   ambiguous=which(indices$CD4present>0 & indices$CD8present>0)
   indices$CD4present[ambiguous[CD4ratios$total[ambiguous]/CD8ratios$total[ambiguous]<=0.5]]=0
   indices$CD8present[ambiguous[CD4ratios$total[ambiguous]/CD8ratios$total[ambiguous]>=2]]=0
-  
-#  indices$flag=indices$CD4present+indices$CD8present
-  
- # indices[indices$flag==2,]
-  
-  #CD4cols=grep('CD4',names(indices),ignore.case=T,value=T)
-  #CD4cols=CD4cols[grep('present',CD4cols,invert=T)]
-  #CD8cols=grep('CD8',names(indices),ignore.case=T,value=T)
-  #CD8cols=CD8cols[grep('present',CD8cols,invert=T)]
-  #indices[CD4cols[,indices$CD4present==1]=1]
-  
-  #indices[indices$flag==2,]=0
-  #indices[indices$CD4present==1,CD4cols]=1
-  #indices[indices$CD4present==1,CD8cols]=0
-  #indices[indices$CD8present==1,CD4cols]=0
-  #indices[indices$CD8present==1,CD8cols]=1
-  
-  #output[,2:dim(output)[2]]=output[,2:dim(output)[2]]*indices[,1:(dim(indices)[2]-3)]
   
   ambiguous=which(indices$CD4present>0 & indices$CD8present>0)
   indices$CD4present[ambiguous]=0
