@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "ERGO.py", line 441, in <module>
+    pep_test(args)
+  File "ERGO.py", line 196, in pep_test
+    model.load_state_dict(checkpoint['model_state_dict'])
+  File "/home/zz2673/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 830, in load_state_dict
+    self.__class__.__name__, "\n\t".join(error_msgs)))
+RuntimeError: Error(s) in loading state_dict for DoubleLSTMClassifier:
+	size mismatch for tcr_lstm.weight_ih_l0: copying a param with shape torch.Size([2000, 10]) from checkpoint, the shape in current model is torch.Size([120, 10]).
+	size mismatch for tcr_lstm.weight_hh_l0: copying a param with shape torch.Size([2000, 500]) from checkpoint, the shape in current model is torch.Size([120, 30]).
+	size mismatch for tcr_lstm.bias_ih_l0: copying a param with shape torch.Size([2000]) from checkpoint, the shape in current model is torch.Size([120]).
+	size mismatch for tcr_lstm.bias_hh_l0: copying a param with shape torch.Size([2000]) from checkpoint, the shape in current model is torch.Size([120]).
+	size mismatch for tcr_lstm.weight_ih_l1: copying a param with shape torch.Size([2000, 500]) from checkpoint, the shape in current model is torch.Size([120, 30]).
+	size mismatch for tcr_lstm.weight_hh_l1: copying a param with shape torch.Size([2000, 500]) from checkpoint, the shape in current model is torch.Size([120, 30]).
+	size mismatch for tcr_lstm.bias_ih_l1: copying a param with shape torch.Size([2000]) from checkpoint, the shape in current model is torch.Size([120]).
+	size mismatch for tcr_lstm.bias_hh_l1: copying a param with shape torch.Size([2000]) from checkpoint, the shape in current model is torch.Size([120]).
+	size mismatch for pep_lstm.weight_ih_l0: copying a param with shape torch.Size([2000, 10]) from checkpoint, the shape in current model is torch.Size([120, 10]).
+	size mismatch for pep_lstm.weight_hh_l0: copying a param with shape torch.Size([2000, 500]) from checkpoint, the shape in current model is torch.Size([120, 30]).
+	size mismatch for pep_lstm.bias_ih_l0: copying a param with shape torch.Size([2000]) from checkpoint, the shape in current model is torch.Size([120]).
+	size mismatch for pep_lstm.bias_hh_l0: copying a param with shape torch.Size([2000]) from checkpoint, the shape in current model is torch.Size([120]).
+	size mismatch for pep_lstm.weight_ih_l1: copying a param with shape torch.Size([2000, 500]) from checkpoint, the shape in current model is torch.Size([120, 30]).
+	size mismatch for pep_lstm.weight_hh_l1: copying a param with shape torch.Size([2000, 500]) from checkpoint, the shape in current model is torch.Size([120, 30]).
+	size mismatch for pep_lstm.bias_ih_l1: copying a param with shape torch.Size([2000]) from checkpoint, the shape in current model is torch.Size([120]).
+	size mismatch for pep_lstm.bias_hh_l1: copying a param with shape torch.Size([2000]) from checkpoint, the shape in current model is torch.Size([120]).
+	size mismatch for hidden_layer.weight: copying a param with shape torch.Size([500, 1000]) from checkpoint, the shape in current model is torch.Size([30, 60]).
+	size mismatch for hidden_layer.bias: copying a param with shape torch.Size([500]) from checkpoint, the shape in current model is torch.Size([30]).
+	size mismatch for output_layer.weight: copying a param with shape torch.Size([1, 500]) from checkpoint, the shape in current model is torch.Size([1, 30]).
